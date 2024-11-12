@@ -1,6 +1,8 @@
+/* eslint-disable react/no-unknown-property */
 import { useRef } from "react";
 import vertexShader from "./shaders/test/vertex.glsl";
 import fragmentShader from "./shaders/test/fragment.glsl";
+
 export default function ShaderPlane() {
   const mesh = useRef();
 
