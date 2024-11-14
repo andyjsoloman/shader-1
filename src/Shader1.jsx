@@ -10,23 +10,6 @@ export default function Shader1() {
   const mesh1 = useRef();
   const mesh2 = useRef();
 
-  //RANDOMS FUNCTION
-  // useEffect(() => {
-  //   if (mesh1.current) {
-  //     const count = mesh1.current.geometry.attributes.position.count;
-  //     const randoms = new Float32Array(count);
-
-  //     for (let i = 0; i < count; i++) {
-  //       randoms[i] = Math.random();
-  //     }
-
-  //     mesh1.current.geometry.setAttribute(
-  //       "aRandom",
-  //       new THREE.BufferAttribute(randoms, 1)
-  //     );
-  //   }
-  // }, []);
-
   const uniforms = useMemo(
     () => ({
       u_time: {
@@ -49,7 +32,6 @@ export default function Shader1() {
         <shaderMaterial
           fragmentShader={fragmentShader}
           vertexShader={vertexShaderReverse}
-          // wireframe={true}
           side={THREE.DoubleSide}
           uniforms={uniforms}
         />
@@ -59,7 +41,6 @@ export default function Shader1() {
         <shaderMaterial
           fragmentShader={fragmentShader}
           vertexShader={vertexShader}
-          // wireframe={true}
           side={THREE.DoubleSide}
           uniforms={uniforms}
         />

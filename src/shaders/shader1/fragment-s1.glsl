@@ -1,6 +1,5 @@
 precision mediump float;
 
-uniform float u_time;
 varying float vZPosition;
 
 void main() {

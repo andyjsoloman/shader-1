@@ -8,28 +8,12 @@ import { useFrame } from "@react-three/fiber";
 export default function Shader2() {
   const mesh = useRef();
 
-  //RANDOMS FUNCTION
-  // useEffect(() => {
-  //   if (mesh1.current) {
-  //     const count = mesh1.current.geometry.attributes.position.count;
-  //     const randoms = new Float32Array(count);
-
-  //     for (let i = 0; i < count; i++) {
-  //       randoms[i] = Math.random();
-  //     }
-
-  //     mesh1.current.geometry.setAttribute(
-  //       "aRandom",
-  //       new THREE.BufferAttribute(randoms, 1)
-  //     );
-  //   }
-  // }, []);
-
   const uniforms = useMemo(
     () => ({
       u_time: {
         value: 0.0,
       },
+      u_frequency: { value: new THREE.Vector2(10, 5) },
     }),
     []
   );
@@ -40,17 +24,15 @@ export default function Shader2() {
   });
 
   return (
-    <>
-      <mesh ref={mesh}>
-        <planeGeometry args={[5, 5, 128, 128]} />
-        <shaderMaterial
-          fragmentShader={fragmentShader}
-          vertexShader={vertexShader}
-          wireframe={true}
-          side={THREE.DoubleSide}
-          uniforms={uniforms}
-        />
-      </mesh>
-    </>
+    <mesh ref={mesh}>
+      <planeGeometry args={[5, 5, 128, 128]} />
+      <shaderMaterial
+        fragmentShader={fragmentShader}
+        vertexShader={vertexShader}
+        wireframe={true}
+        side={THREE.DoubleSide}
+        uniforms={uniforms}
+      />
+    </mesh>
   );
 }

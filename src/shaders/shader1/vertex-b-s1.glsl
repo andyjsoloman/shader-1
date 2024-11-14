@@ -1,7 +1,5 @@
 uniform float u_time;
-attribute float aRandom;
 
-varying vec2 vUv;
 varying float vZPosition;  // Varying for z position
 
 void main() {
