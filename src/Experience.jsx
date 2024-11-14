@@ -1,18 +1,13 @@
 /* eslint-disable react/no-unknown-property */
-import { useRef } from "react";
-import vertexShader from "./shaders/test/vertex.glsl";
-import fragmentShader from "./shaders/test/fragment.glsl";
 
-export default function ShaderPlane() {
-  const mesh = useRef();
+import Shader1 from "./Shader1";
+import Shader2 from "./Shader2";
 
+export default function Experience() {
   return (
-    <mesh ref={mesh}>
-      <planeGeometry args={[5, 5, 32, 32]} />
-      <shaderMaterial
-        fragmentShader={fragmentShader}
-        vertexShader={vertexShader}
-      />
-    </mesh>
+    <>
+      {/* <Shader1 />; */}
+      <Shader2 />
+    </>
   );
 }
