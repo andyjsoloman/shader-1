@@ -27,7 +27,7 @@ export default function Shader1() {
 
   return (
     <>
-      <mesh ref={mesh1} position={[2.2, 0, 0]} rotation-y={-0.5}>
+      <mesh ref={mesh1} position={[22.2, 0, 0]} rotation-y={-0.5}>
         <planeGeometry args={[5, 5, 128, 128]} />
         <shaderMaterial
           fragmentShader={fragmentShader}
@@ -36,7 +36,7 @@ export default function Shader1() {
           uniforms={uniforms}
         />
       </mesh>
-      <mesh ref={mesh2} position={[-2.2, 0, 0]} rotation-y={0.5}>
+      <mesh ref={mesh2} position={[17.8, 0, 0]} rotation-y={0.5}>
         <planeGeometry args={[5, 5, 128, 128]} />
         <shaderMaterial
           fragmentShader={fragmentShader}
