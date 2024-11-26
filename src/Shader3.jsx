@@ -29,7 +29,7 @@ export default function Shader3() {
       <shaderMaterial
         fragmentShader={fragmentShader}
         vertexShader={vertexShader}
-        wireframe={true}
+        wireframe={false}
         side={THREE.DoubleSide}
         uniforms={uniforms}
       />
