@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unknown-property */
 import { useRef, useMemo } from "react";
 import * as THREE from "three";
-import vertexShader from "./shaders/shader3/vertex-s3.glsl";
-import fragmentShader from "./shaders/shader3/fragment-s3.glsl";
+import vertexShader from "./shaders/shader4/vertex-s4.glsl";
+import fragmentShader from "./shaders/shader4/fragment-s4.glsl";
 import { useFrame } from "@react-three/fiber";
 
 export default function Shader3() {
@@ -24,7 +24,7 @@ export default function Shader3() {
   });
 
   return (
-    <mesh ref={mesh} position={[10, 0, 0]}>
+    <mesh ref={mesh}>
       <planeGeometry args={[5, 5, 128, 128]} />
       <shaderMaterial
         fragmentShader={fragmentShader}
