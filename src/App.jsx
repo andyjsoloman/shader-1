@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { Canvas } from "@react-three/fiber";
 
 import "./App.css";
@@ -8,6 +9,7 @@ function App() {
   return (
     <>
       <Canvas>
+        <color args={["#292d35"]} attach="background" />
         <OrbitControls />
         <Experience />
       </Canvas>
