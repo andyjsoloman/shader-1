@@ -8,7 +8,7 @@ import { OrbitControls } from "@react-three/drei";
 function App() {
   return (
     <>
-      <Canvas>
+      <Canvas shadows>
         <color args={["#292d35"]} attach="background" />
         <OrbitControls />
         <Experience />
