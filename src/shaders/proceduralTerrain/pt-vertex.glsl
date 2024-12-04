@@ -1,10 +1,12 @@
-varying vec2 vUv;
+#include ../includes/simplexNoise2d.glsl
+
+float getElevation(vec2 position){
+    float elevation = 0.0;
+    elevation += simplexNoise2d(position);
+    return elevation;
+}
 
 void main() {
-  vUv = uv;
-  vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-  vec4 viewPosition = viewMatrix * modelPosition;
-  vec4 projectedPosition = projectionMatrix * viewPosition;
-
-  gl_Position = projectedPosition;
+float elevation = getElevation(csm_Position.xz);
+csm_Position.y += elevation;
 }

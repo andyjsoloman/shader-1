@@ -30,17 +30,17 @@ export default function ProceduralTerrain() {
   // Define the custom shader material
   const material = useMemo(() => {
     return new CustomShaderMaterial({
-      baseMaterial: THREE.MeshStandardMaterial, // Base material type
-      silent: true, // Avoid warnings for missing properties
+      baseMaterial: THREE.MeshStandardMaterial,
+      fragmentShader: fragmentShader,
+      vertexShader: vertexShader,
+      //   silent: true,
 
       // MeshStandardMaterial properties
       metalness: 0,
       roughness: 0.5,
-      color: "#85d534",
 
       // Custom shader properties
-      fragmentShader: fragmentShader,
-      vertexShader: vertexShader,
+
       uniforms: uniforms,
       wireframe: false,
 
@@ -113,12 +113,15 @@ export default function ProceduralTerrain() {
       />
       <mesh
         ref={mesh}
-        rotation={[Math.PI / 2, 0, 0]}
         position={[0, 0, 0]}
         castShadow
         receiveShadow
+        rotation={[-Math.PI, 0, 0]}
       >
-        <planeGeometry args={[10, 10, 512, 512]} />
+        <planeGeometry
+          args={[10, 10, 512, 512]}
+          ref={(geometry) => geometry?.rotateX(-Math.PI / 2)}
+        />
         <primitive object={material} attach="material" />
       </mesh>
     </>

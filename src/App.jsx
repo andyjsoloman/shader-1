@@ -9,6 +9,7 @@ function App() {
   return (
     <>
       <Canvas shadows>
+        <axesHelper args={[5]} position={[0, 5, 0]} />
         <color args={["#292d35"]} attach="background" />
         <OrbitControls />
         <Experience />
