@@ -11,6 +11,15 @@ import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 
 export default function ProceduralTerrain() {
   const mesh = useRef();
+  const { scene } = useThree();
+  const debugObject = {};
+
+  debugObject.colorWaterDeep = "#002b3d";
+  debugObject.colorWaterSurface = "#66a8ff";
+  debugObject.colorSand = "#ffe894";
+  debugObject.colorGrass = "#85d534";
+  debugObject.colorSnow = "#ffffff";
+  debugObject.colorRock = "#bfbd8d";
 
   const { camera } = useThree();
   useEffect(() => {
@@ -35,6 +44,14 @@ export default function ProceduralTerrain() {
       u_strength: { value: 2.5 },
       u_warpFrequency: { value: 2.75 },
       u_warpStrength: { value: 0.4 },
+      u_colorWaterDeep: { value: new THREE.Color(debugObject.colorWaterDeep) },
+      u_colorWaterSurface: {
+        value: new THREE.Color(debugObject.colorWaterSurface),
+      },
+      u_colorSand: { value: new THREE.Color(debugObject.colorSand) },
+      u_colorGrass: { value: new THREE.Color(debugObject.colorGrass) },
+      u_colorSnow: { value: new THREE.Color(debugObject.colorSnow) },
+      u_colorRock: { value: new THREE.Color(debugObject.colorRock) },
     }),
     []
   );
@@ -90,14 +107,57 @@ export default function ProceduralTerrain() {
     gui
       .add(uniforms.u_warpStrength, "value", 0, 1, 0.001)
       .name("u_warpStrength");
-
+    gui
+      .addColor(debugObject, "colorWaterDeep")
+      .onChange(() =>
+        uniforms.u_colorWaterDeep.value.set(debugObject.colorWaterDeep)
+      );
+    gui
+      .addColor(debugObject, "colorWaterSurface")
+      .onChange(() =>
+        uniforms.u_colorWaterSurface.value.set(debugObject.colorWaterSurface)
+      );
+    gui
+      .addColor(debugObject, "colorSand")
+      .onChange(() => uniforms.u_colorSand.value.set(debugObject.colorSand));
+    gui
+      .addColor(debugObject, "colorGrass")
+      .onChange(() => uniforms.u_colorGrass.value.set(debugObject.colorGrass));
+    gui
+      .addColor(debugObject, "colorSnow")
+      .onChange(() => uniforms.u_colorSnow.value.set(debugObject.colorSnow));
+    gui
+      .addColor(debugObject, "colorRock")
+      .onChange(() => uniforms.u_colorRock.value.set(debugObject.colorRock));
     return () => gui.destroy();
   }, [uniforms]);
+
+  const water = useMemo(() => {
+    return new THREE.Mesh(
+      new THREE.PlaneGeometry(10, 10, 1, 1),
+      new THREE.MeshPhysicalMaterial({
+        transmission: 1,
+        roughness: 0.3,
+      })
+    );
+  }, []);
+
+  useEffect(() => {
+    if (water) {
+      water.rotation.x = -Math.PI * 0.5;
+      water.position.y = -0.1;
+      scene.add(water);
+
+      return () => {
+        scene.remove(water);
+      };
+    }
+  }, [water, scene]);
 
   // Create the board using CSG
   const board = useMemo(() => {
     const boardFill = new Brush(new THREE.BoxGeometry(11, 2, 11));
-    const boardHole = new Brush(new THREE.BoxGeometry(10, 2.2, 10));
+    const boardHole = new Brush(new THREE.BoxGeometry(10, 2.5, 10));
     boardHole.position.y = 0.2;
     boardHole.updateMatrixWorld();
     const evaluator = new Evaluator();
@@ -113,8 +173,6 @@ export default function ProceduralTerrain() {
   });
   board.castShadow = true;
   board.receiveShadow = true;
-
-  const { scene } = useThree();
 
   // Add the board to the scene
   useEffect(() => {
@@ -146,7 +204,7 @@ export default function ProceduralTerrain() {
       />
       <mesh
         ref={mesh}
-        position={[0, 0.1, 0]}
+        position={[0, 0, 0]}
         rotation={[-Math.PI, 0, 0]}
         geometry={geometry}
         customDepthMaterial={depthMaterial}
