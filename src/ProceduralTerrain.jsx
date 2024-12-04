@@ -18,6 +18,12 @@ export default function ProceduralTerrain() {
     camera.lookAt(0, 0, 0);
   }, [camera]);
 
+  const geometry = useMemo(() => {
+    const geom = new THREE.PlaneGeometry(10, 10, 512, 512);
+    geom.rotateX(-Math.PI / 2); // Rotate once
+    return geom;
+  }, []);
+
   const uniforms = useMemo(
     () => ({
       u_time: {
@@ -117,11 +123,8 @@ export default function ProceduralTerrain() {
         castShadow
         receiveShadow
         rotation={[-Math.PI, 0, 0]}
+        geometry={geometry}
       >
-        <planeGeometry
-          args={[10, 10, 512, 512]}
-          ref={(geometry) => geometry?.rotateX(-Math.PI / 2)}
-        />
         <primitive object={material} attach="material" />
       </mesh>
     </>
