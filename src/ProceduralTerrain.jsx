@@ -20,7 +20,9 @@ export default function ProceduralTerrain() {
 
   const geometry = useMemo(() => {
     const geom = new THREE.PlaneGeometry(10, 10, 512, 512);
-    geom.rotateX(-Math.PI / 2); // Rotate once
+    geom.rotateX(-Math.PI / 2);
+    geom.deleteAttribute("uv");
+    geom.deleteAttribute("normal");
     return geom;
   }, []);
 
@@ -29,11 +31,14 @@ export default function ProceduralTerrain() {
       u_time: {
         value: 0.0,
       },
+      u_positionFrequency: { value: 0.2 },
+      u_strength: { value: 2.5 },
+      u_warpFrequency: { value: 2.75 },
+      u_warpStrength: { value: 0.4 },
     }),
     []
   );
 
-  // Define the custom shader material
   const material = useMemo(() => {
     return new CustomShaderMaterial({
       baseMaterial: THREE.MeshStandardMaterial,
@@ -44,13 +49,27 @@ export default function ProceduralTerrain() {
       // MeshStandardMaterial properties
       metalness: 0,
       roughness: 0.5,
+      color: "#85d534",
 
       // Custom shader properties
-
+      //   castShadow: true,
+      //   receiveShadow: true,
       uniforms: uniforms,
       wireframe: false,
 
       side: THREE.DoubleSide,
+    });
+  }, [uniforms]);
+
+  const depthMaterial = useMemo(() => {
+    return new CustomShaderMaterial({
+      baseMaterial: THREE.MeshDepthMaterial,
+      uniforms,
+      vertexShader: vertexShader,
+      //   silent: true,
+
+      // MeshDepthMaterial properties
+      depthPacking: THREE.RGBADepthPacking,
     });
   }, [uniforms]);
 
@@ -61,16 +80,24 @@ export default function ProceduralTerrain() {
 
   useEffect(() => {
     const gui = new GUI({ width: 400 });
+    gui
+      .add(uniforms.u_positionFrequency, "value", 0, 1, 0.001)
+      .name("u_positionFrequency");
+    gui.add(uniforms.u_strength, "value", 0, 10, 0.001).name("u_strength");
+    gui
+      .add(uniforms.u_warpFrequency, "value", 0, 10, 0.001)
+      .name("u_warpFrequency");
+    gui
+      .add(uniforms.u_warpStrength, "value", 0, 1, 0.001)
+      .name("u_warpStrength");
 
-    return () => {
-      gui.destroy();
-    };
-  }, []);
+    return () => gui.destroy();
+  }, [uniforms]);
 
   // Create the board using CSG
   const board = useMemo(() => {
     const boardFill = new Brush(new THREE.BoxGeometry(11, 2, 11));
-    const boardHole = new Brush(new THREE.BoxGeometry(10, 2.1, 10));
+    const boardHole = new Brush(new THREE.BoxGeometry(10, 2.2, 10));
     boardHole.position.y = 0.2;
     boardHole.updateMatrixWorld();
     const evaluator = new Evaluator();
@@ -119,11 +146,10 @@ export default function ProceduralTerrain() {
       />
       <mesh
         ref={mesh}
-        position={[0, 0, 0]}
-        castShadow
-        receiveShadow
+        position={[0, 0.1, 0]}
         rotation={[-Math.PI, 0, 0]}
         geometry={geometry}
+        customDepthMaterial={depthMaterial}
       >
         <primitive object={material} attach="material" />
       </mesh>
