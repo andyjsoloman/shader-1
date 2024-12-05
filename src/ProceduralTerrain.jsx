@@ -4,6 +4,8 @@ import { useRef, useMemo, useEffect } from "react";
 import * as THREE from "three";
 import vertexShader from "./shaders/proceduralTerrain/pt-vertex.glsl";
 import fragmentShader from "./shaders/proceduralTerrain/pt-fragment.glsl";
+import cloudFragmentShader from "./shaders/proceduralTerrain/cloud-fragment.glsl";
+import cloudVertexShader from "./shaders/proceduralTerrain/cloud-vertex.glsl";
 import { useFrame, useThree } from "@react-three/fiber";
 import { GUI } from "lil-gui";
 import { SUBTRACTION, Evaluator, Brush } from "three-bvh-csg";
@@ -23,7 +25,7 @@ export default function ProceduralTerrain() {
 
   const { camera } = useThree();
   useEffect(() => {
-    camera.position.set(0, 10, 15);
+    camera.position.set(-12, 4, 0);
     camera.lookAt(0, 0, 0);
   }, [camera]);
 
@@ -52,6 +54,14 @@ export default function ProceduralTerrain() {
       u_colorGrass: { value: new THREE.Color(debugObject.colorGrass) },
       u_colorSnow: { value: new THREE.Color(debugObject.colorSnow) },
       u_colorRock: { value: new THREE.Color(debugObject.colorRock) },
+    }),
+    []
+  );
+
+  const cloudUniforms = useMemo(
+    () => ({
+      u_time: { value: 0.0 },
+      u_color: { value: new THREE.Color("#ffffff") },
     }),
     []
   );
@@ -133,12 +143,13 @@ export default function ProceduralTerrain() {
     return () => gui.destroy();
   }, [uniforms]);
 
+  //WATER
   const water = useMemo(() => {
     return new THREE.Mesh(
-      new THREE.CircleGeometry(5, 32),
+      new THREE.CircleGeometry(7.5, 32),
       new THREE.MeshPhysicalMaterial({
         transmission: 1,
-        roughness: 0.3,
+        roughness: 0.4,
       })
     );
   }, []);
@@ -154,6 +165,15 @@ export default function ProceduralTerrain() {
       };
     }
   }, [water, scene]);
+
+  //SMOKE
+  const clouds = useMemo(() => {
+    const geom = new THREE.PlaneGeometry(15, 15, 512, 512);
+    geom.rotateX(-Math.PI / 2);
+    // geom.deleteAttribute("uv");
+    geom.deleteAttribute("normal");
+    return geom;
+  }, []);
 
   //BOARD
   const board = useMemo(() => {
@@ -211,6 +231,19 @@ export default function ProceduralTerrain() {
         customDepthMaterial={depthMaterial}
       >
         <primitive object={material} attach="material" />
+      </mesh>
+      <mesh
+        position={[0, 0.25, 0]}
+        rotation={[-Math.PI, 0, 0]}
+        geometry={clouds}
+      >
+        <shaderMaterial
+          fragmentShader={cloudFragmentShader}
+          vertexShader={cloudVertexShader}
+          wireframe={true}
+          side={THREE.DoubleSide}
+          uniforms={cloudUniforms}
+        />
       </mesh>
     </>
   );
