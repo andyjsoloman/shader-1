@@ -6,11 +6,26 @@ uniform vec3 u_colorSnow;
 uniform vec3 u_colorRock;
 
 varying vec3 vPosition;
+varying vec2 vUv;
 varying float vUpDot;
 
 #include ../includes/simplexNoise2d.glsl
 
 void main() {
+
+
+    vec2 center = vec2(0.5); // Center of the circle
+    float radius = 0.5; // Adjust radius for visibility
+
+    // Calculate distance from center
+    float dist = distance(vUv, center);
+
+    // Discard fragments outside the circle
+    if (dist > radius) {
+        discard;
+    }
+
+
 //Color
 vec3 color = vec3(1.0);
 

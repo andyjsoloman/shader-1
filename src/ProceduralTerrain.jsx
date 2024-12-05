@@ -23,14 +23,14 @@ export default function ProceduralTerrain() {
 
   const { camera } = useThree();
   useEffect(() => {
-    camera.position.set(0, 10, 10);
+    camera.position.set(0, 10, 15);
     camera.lookAt(0, 0, 0);
   }, [camera]);
 
   const geometry = useMemo(() => {
-    const geom = new THREE.PlaneGeometry(10, 10, 512, 512);
+    const geom = new THREE.PlaneGeometry(15, 15, 512, 512);
     geom.rotateX(-Math.PI / 2);
-    geom.deleteAttribute("uv");
+    // geom.deleteAttribute("uv");
     geom.deleteAttribute("normal");
     return geom;
   }, []);
@@ -83,6 +83,7 @@ export default function ProceduralTerrain() {
       baseMaterial: THREE.MeshDepthMaterial,
       uniforms,
       vertexShader: vertexShader,
+
       //   silent: true,
 
       // MeshDepthMaterial properties
@@ -134,7 +135,7 @@ export default function ProceduralTerrain() {
 
   const water = useMemo(() => {
     return new THREE.Mesh(
-      new THREE.PlaneGeometry(10, 10, 1, 1),
+      new THREE.CircleGeometry(5, 32),
       new THREE.MeshPhysicalMaterial({
         transmission: 1,
         roughness: 0.3,
@@ -154,10 +155,10 @@ export default function ProceduralTerrain() {
     }
   }, [water, scene]);
 
-  // Create the board using CSG
+  //BOARD
   const board = useMemo(() => {
-    const boardFill = new Brush(new THREE.BoxGeometry(11, 2, 11));
-    const boardHole = new Brush(new THREE.BoxGeometry(10, 2.5, 10));
+    const boardFill = new Brush(new THREE.CylinderGeometry(8, 8, 2, 64));
+    const boardHole = new Brush(new THREE.CylinderGeometry(7.5, 7.5, 2.5, 64));
     boardHole.position.y = 0.2;
     boardHole.updateMatrixWorld();
     const evaluator = new Evaluator();

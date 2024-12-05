@@ -5,12 +5,13 @@ uniform float u_warpFrequency;
 uniform float u_warpStrength;
 
 varying vec3 vPosition;
+varying vec2 vUv;
 varying float vUpDot;
 
 #include ../includes/simplexNoise2d.glsl
 
 float getElevation(vec2 position){
-
+vUv = uv;
 
 vec2 warpedPosition = position;
 warpedPosition += u_time *0.2;
