@@ -6,7 +6,8 @@ import vertexShader from "./shaders/proceduralTerrain/pt-vertex.glsl";
 import fragmentShader from "./shaders/proceduralTerrain/pt-fragment.glsl";
 import cloudFragmentShader from "./shaders/proceduralTerrain/cloud-fragment.glsl";
 import cloudVertexShader from "./shaders/proceduralTerrain/cloud-vertex.glsl";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame, useThree, useLoader } from "@react-three/fiber";
+import { TextureLoader } from "three/src/loaders/TextureLoader";
 import { GUI } from "lil-gui";
 import { SUBTRACTION, Evaluator, Brush } from "three-bvh-csg";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
@@ -15,6 +16,10 @@ export default function ProceduralTerrain() {
   const mesh = useRef();
   const { scene } = useThree();
   const debugObject = {};
+  const perlinTexture = useLoader(
+    TextureLoader,
+    "src/assets/gabor 6 - 128x128.png"
+  );
 
   debugObject.colorWaterDeep = "#002b3d";
   debugObject.colorWaterSurface = "#66a8ff";
@@ -62,6 +67,7 @@ export default function ProceduralTerrain() {
     () => ({
       u_time: { value: 0.0 },
       u_color: { value: new THREE.Color("#ffffff") },
+      u_perlinTexture: { value: perlinTexture },
     }),
     []
   );
@@ -104,6 +110,7 @@ export default function ProceduralTerrain() {
   useFrame((state) => {
     const { clock } = state;
     mesh.current.material.uniforms.u_time.value = clock.getElapsedTime();
+    cloudUniforms.u_time.value = clock.getElapsedTime();
   });
 
   useEffect(() => {
@@ -166,7 +173,8 @@ export default function ProceduralTerrain() {
     }
   }, [water, scene]);
 
-  //SMOKE
+  //CLOUDS
+
   const clouds = useMemo(() => {
     const geom = new THREE.PlaneGeometry(15, 15, 512, 512);
     geom.rotateX(-Math.PI / 2);
@@ -240,9 +248,10 @@ export default function ProceduralTerrain() {
         <shaderMaterial
           fragmentShader={cloudFragmentShader}
           vertexShader={cloudVertexShader}
-          wireframe={true}
+          //   wireframe={true}
           side={THREE.DoubleSide}
           uniforms={cloudUniforms}
+          transparent={true}
         />
       </mesh>
     </>
